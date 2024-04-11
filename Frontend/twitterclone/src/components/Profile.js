@@ -3,8 +3,12 @@ import { IoIosArrowRoundBack } from 'react-icons/io';
 import { Link, useParams } from 'react-router-dom';
 import Avatar from 'react-avatar';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useGetProfile from '../hooks/useGetProfile';
+import axios from 'axios';
+import { USER_API_END_POINT } from '../utils/constant';
+import toast from 'react-hot-toast';
+import { followingUpdate } from '../redux/userSlice';
 
 
 
@@ -12,7 +16,43 @@ import useGetProfile from '../hooks/useGetProfile';
 function Profile() {
 const { user,profile} =useSelector(store=>store.user);
 const {id} =useParams()
+const dispatch =useDispatch()
 useGetProfile(id)
+
+const followAndUnfollowHandler= async()=>{
+  //unfollow
+
+if(user.following.includes(id)){
+try {
+  axios.defaults.withCredentials=true;
+  const res= await axios.post(`${USER_API_END_POINT}/unfollow/${id}` ,{id:user?._id})
+  console.log(res)
+  dispatch(followingUpdate(id))
+  toast.success(res.data.message)
+} catch (error) {
+  toast.error(error.response.data.message)
+  console.log(error);
+}
+
+
+}else{  
+  //follow
+  try {
+    axios.defaults.withCredentials=true;
+    const res= await axios.post(`${USER_API_END_POINT}/follow/${id}` ,{id:user?._id})
+    console.log(res)
+    dispatch(followingUpdate(id))
+    toast.success(res.data.message)
+  } catch (error) {
+    toast.error(error.response.data.message)
+    console.log(error);
+  }
+  
+  
+}
+
+}
+
 
 
   return (
@@ -43,8 +83,15 @@ useGetProfile(id)
             />
           </div>
           <div className="text-right mr-5 mb-6">
-            <button className="border-gray-400 px-4 py-1 border mt-1 rounded-full hover:bg-gray-200">Edit Profile</button>
-          </div>
+  {(profile?._id === user?._id) ? (
+    <button className="border-gray-400 px-4 py-1 border mt-1 rounded-full hover:bg-gray-200">Edit Profile</button>
+  ) : (
+    <button onClick={followAndUnfollowHandler} className="border-gray-400 px-4 text-white py-1 mt-1 rounded-full bg-black">
+      {user.following.includes(id) ? "Following" : "Follow"}
+    </button>
+  )}
+</div>
+
         </div>
 
         {/* User Information */}

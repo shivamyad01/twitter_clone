@@ -6,24 +6,46 @@ import { TWEET_API_END_POINT } from "../utils/constant";
 
 const useGetMyTweets = (id) => {
     const dispatch = useDispatch();
-    const { refresh } = useSelector(store => store.tweets);
+    const { refresh ,isActive} = useSelector(store => store.tweets);
+
+
+
+    const fetchMyTweets = async () => {
+        try {
+            const res = await axios.get(`${TWEET_API_END_POINT}/getalltweet/${id}`, {
+                withCredentials: true
+            });
+
+            dispatch(getAllTweets(res.data.tweets));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    const followingTweetHandler= async()=>{
+ 
+        try {
+          const res= await axios.get(`${TWEET_API_END_POINT}/getfollowingtweet/${id}`)
+          console.log(res);
+          dispatch(getAllTweets(res.data.tweets))
+       
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    
 
     useEffect(() => {
-        const fetchMyTweets = async () => {
-            try {
-                const res = await axios.get(`${TWEET_API_END_POINT}/getalltweet/${id}`, {
-                    withCredentials: true
-                });
-
-                dispatch(getAllTweets(res.data.tweets));
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
+      if(isActive){
         fetchMyTweets();
+      } else{
+        followingTweetHandler()
+      }
+       
 
-    }, [refresh]);
+   
+    }, [isActive, refresh]);
 
 };
 

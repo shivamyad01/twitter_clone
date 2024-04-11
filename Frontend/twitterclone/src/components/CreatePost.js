@@ -4,15 +4,16 @@ import { AiOutlinePicture } from "react-icons/ai";
 import axios from "axios";
 import { TWEET_API_END_POINT } from "../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { getRefresh } from "../redux/tweetSlice";
+import {   getIsActive, getRefresh,  } from "../redux/tweetSlice";
 
 function CreatePost() {
   const [description, setDescription] = useState("");
   const { user } = useSelector((store) => store.user);
   const dispatch = useDispatch();
+  const {isActive}=useSelector((store)=>store.tweets)
 
   useEffect(() => {
-    dispatch(getRefresh());
+    dispatch(getRefresh);
   }, [dispatch]);
 
   const submitHandler = async () => {
@@ -31,18 +32,25 @@ function CreatePost() {
     }
   };
 
+  const forYouHandler=()=>{
+dispatch(getIsActive(true))
+  }
+
+  const followingHandler =()=>{
+    dispatch(getIsActive(false))
+  }
+  
   return (
     <div className="w-[100%]">
-      <div>
-        <div className="flex items-center justify-between  ">
-          <div className="cursor-pointer hover:bg-gray-200 w-full text-center">
-            <h1 className="font-bold text-gray-700 py-2 ">For you</h1>
-          </div>
-          <div className="cursor-pointer  hover:bg-gray-200 w-full text-center">
-            <h1 className="font-bold text-gray-700 py-2">Following</h1>
-          </div>
-        </div>
-      </div>
+     <div className="flex items-center justify-between">
+  <div onClick={forYouHandler} className={`cursor-pointer ${isActive ? "border-b-4 border-blue-600": ""} hover:bg-gray-200 w-full text-center py-2 px-4 transition duration-300 ease-in-out transform hover:-translate-y-1`}>
+    <h1 className="font-bold text-gray-700">For You</h1>
+  </div>
+  <div onClick={followingHandler} className={`cursor-pointer ${!isActive ? "border-b-4 border-blue-600": ""} hover:bg-gray-200 w-full text-center py-2 px-4 transition duration-300 ease-in-out transform hover:-translate-y-1`}>
+    <h1 className="font-bold text-gray-700">Following</h1>
+  </div>
+</div>
+
 
       <div>
         <div className="flex items-center p-4">

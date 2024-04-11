@@ -5,13 +5,29 @@ import { IoIosNotificationsOutline } from "react-icons/io";
 import { CiUser } from "react-icons/ci";
 import { CiBookmark } from "react-icons/ci";
 import { CiLogout } from "react-icons/ci";
-import { useSelector } from "react-redux";
-import { Link} from "react-router-dom";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate} from "react-router-dom";
+import axios from "axios";
+import { USER_API_END_POINT } from "../utils/constant";
+import { getMyProfile, getOtherUsers, getUser } from "../redux/userSlice";
+import toast from "react-hot-toast"
 function LeftSidebar() {
   const { user} =useSelector(store=>store.user);
+  const navigate = useNavigate();
 
+  const dispatch=useDispatch()
+   const logoutHandler= async()=>{
+    try {
+      const res = await axios.get(`${USER_API_END_POINT}/logout`);
+      dispatch(getUser(null))
+      dispatch(getOtherUsers(null))
+      dispatch(getMyProfile(null))
+      toast.success(res.data.message)
+      navigate('/login')
+    } catch (error) {
+      
+    }
+   }
  
   return (
     <div className="w-[20%]">
@@ -46,10 +62,13 @@ function LeftSidebar() {
         <CiBookmark />
         <h1 className="font-bold text-lg ml-2">Bookmarks</h1>
       </div>
-      <Link to="/login" className="flex items-center hover:bg-gray-100 px-4 py-2 rounded-full cursor-pointer">
+
+
+      <div onClick={logoutHandler}  className="flex items-center hover:bg-gray-100 px-4 py-2 rounded-full cursor-pointer">
+
   <CiLogout />
   <h1 className="font-bold text-lg ml-2">Logout</h1>
-</Link>
+</div>
 
              <button className="px-4 py-2 border-none text-md bg-sky-500 rounded-full text-white font-bold">Post</button>
         </div>

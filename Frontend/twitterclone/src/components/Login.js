@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { USER_API_END_POINT } from '../utils/constant';
 import { useNavigate } from 'react-router-dom';
+import toast from "react-hot-toast"
 
 import { getUser } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
@@ -11,7 +12,9 @@ function Login() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  
+
+
   const navigate=useNavigate();
  const dispatch=useDispatch()
   const submitHandler = async (e) => {
@@ -31,16 +34,18 @@ function Login() {
               'Content-Type':"application/json"
              }, 
 
+           
           }
+          
         );
-
+        toast.success(res.data.message)
         //optional channing
         dispatch(getUser(res?.data?.user))
         
         if(res.data.success){
           navigate("/");
         }
-        setSuccessMessage('Login successful!');
+       
       } catch (error) {
         console.log(error);
       }
@@ -53,7 +58,7 @@ function Login() {
           { headers }
         );
         console.log(res);
-        setSuccessMessage('Signup successful!');
+        toast.success(res.data.message)
       } catch (error) {
         console.log(error);
       }
@@ -62,7 +67,7 @@ function Login() {
 
   const loginSingupHandler = () => {
     setIsLogin(!isLogin);
-    setSuccessMessage(''); // Clear success message when switching between login/signup
+   
   };
 
    
@@ -98,7 +103,7 @@ function Login() {
           <button className='bg-[#109BF0] border-none py-2 rounded-full text-white' >{isLogin ? "Login":"Create Account"}</button>
           <h1 className=' text-sm mt-2 text-center'>{isLogin ? "Do not have a account?":"Already have an account?"}<span className=' font-bold text-blue-500 cursor-pointer' onClick={loginSingupHandler}>{isLogin ? "Signup":"Login"}</span> </h1>
         </form>
-        {successMessage && <div className='text-green-600 mt-4  ml-11 flex text-center'>{successMessage}</div>}
+        
         </div>
       </div>
     </div>
