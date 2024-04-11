@@ -13,6 +13,6 @@ router.get('/logout',Logout)
 router.put('/bookmark/:id', isAuthenticated,bookmarks);
 router.get('/profile/:id',getMyProfile);
 router.get('/otheruser/:id',getOtherUsers);
-router.post('/follow/:id', isAuthenticated,follow);
-router.post('/unfollow/:id', isAuthenticated,unfollow);
+router.post('/follow/:id',follow);
+router.post('/unfollow/:id',unfollow);
 export default router;

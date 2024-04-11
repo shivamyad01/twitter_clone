@@ -7,10 +7,10 @@ import isAuthenticated from '../config/auth.js'; // Corrected import path for is
 const router = express.Router();
 
 router.post('/create', createTweet);
-router.delete('/delete/:id', isAuthenticated , deleteTweet);
+router.delete('/delete/:id' , deleteTweet);
 router.put('/like/:id',likeOrDislike);
 router.get('/getalltweet/:id',getAllTweets);
-router.get('/getfollowingtweet/:id', isAuthenticated,getFollowingTweets);
+router.get('/getfollowingtweet/:id',getFollowingTweets);
 
 
 
